@@ -27,12 +27,12 @@
         <label for="formFile" class="form-label">Select an image</label>
         <input class="form-control" type="file" id="formFile" name = "picture" accept="image/*" required>
       </div>
-      <button class="btn btn-primary" type="submit">Generate palette</button>
+      <button class="btn btn-outline-dark pal-gen" type="submit">Generate palette</button>
     </form>
 
-    <!-- {%if filename:%}
-    <img src="{{url_for('static', filename= 'uploads/' + filename)}}" alt="uploaded picture">
-    {%endif%} -->
+    {%if pic:%}
+    <img src="{{pic}}" alt="uploaded picture">
+    {%endif%}
     
     <div class="row">
       {%if all_colours != []:%}

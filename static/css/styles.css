@@ -3,9 +3,12 @@ body{
 }
 
 
-
 .color-btn{
   padding: 3%;
   /* margin: 7%;
   border: 7%; */
+}
+
+.pal-gen{
+    margin-bottom: 3%;
 }

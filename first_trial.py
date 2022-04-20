@@ -1,12 +1,9 @@
+# initial code which saves image files on a folder. Not supported by Heroku but works on local system
 import os
 from flask import Flask, jsonify, render_template, request, url_for, redirect, flash
 import numpy as np
 from PIL import Image
 from werkzeug.utils import secure_filename
-
-
-import io
-import base64
 
 
 
@@ -25,26 +22,14 @@ def allowed_file(filename):
 @app.route("/", methods=["GET", "POST"])
 def home():
     rgb_colors = []
-    pic = None
-    filename = None
     if request.method == "POST":
-        pic = request.files.get("picture")
+        pic = (request.files.get("picture"))
         if pic and allowed_file(pic.filename):
-            new_pic = Image.open(pic).convert("RGB")
-            new_pic.thumbnail((1500, 1500))
-
-            data = io.BytesIO()
-            new_pic.save(data, "JPEG")
-            encoded_pic = base64.b64encode(data.getvalue())
-            decoded_pic = encoded_pic.decode('utf-8')
-            pic_data = f"data:image/jpeg;base64,{decoded_pic}"
-
-            rgb_colors=palette(pic_data)
-            # filename = secure_filename(pic.filename)
-            # pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # new_pic = Image.open(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # rgb_colors = palette(new_pic)
-            # os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            filename = secure_filename(pic.filename)
+            pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            new_pic = Image.open(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            rgb_colors = palette(new_pic)
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash("palette generated successfully")
 
         else:
@@ -57,7 +42,7 @@ def home():
         all_colours = jsonify(rgb_colors).json
 
     return render_template("index.html", all_colours=all_colours,
-                           filename=filename)
+                           )
 
 
 def palette(pic):
@@ -83,7 +68,3 @@ def asvoid(arr):
     """
     arr = np.ascontiguousarray(arr)
     return arr.view(np.dtype((np.void, arr.dtype.itemsize * arr.shape[-1])))
-
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
